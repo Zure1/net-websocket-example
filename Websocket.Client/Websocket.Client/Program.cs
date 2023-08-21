@@ -1,8 +1,5 @@
-﻿using System;
-using System.Net.WebSockets;
+﻿using System.Net.WebSockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Websocket.Client
 {
@@ -10,7 +7,7 @@ namespace Websocket.Client
     {
         static async Task Main(string[] args)
         {
-            string port = "5070";
+            string port = "5000";
 
             Console.WriteLine("Press 'Enter' to continue...");
             Console.ReadLine();
