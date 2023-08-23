@@ -10,18 +10,34 @@ namespace Websocket.Client
 
         static async Task Main(string[] args)
         {
-            await EstablishWebsocketConnectionAsync();
+            await ConnectToServerAsync();
             await HandleWebsocketCommunicationAsync();
 
             Console.ReadLine();
         }
 
-        static async Task EstablishWebsocketConnectionAsync()
+        static async Task ConnectToServerAsync()
         {
             var serverUri = new Uri($"ws://localhost:{WebSocketConfiguration.Port}/send");
-            ConsoleUtils.DisplayFakeProgress("Connecting to server", 500);
-            await WebSocketClient.ConnectAsync(serverUri, CancellationToken.None);
-            Console.WriteLine("Websocket connection established!\n");
+            var isConnected = false;
+
+            Console.WriteLine($"Connecting to {serverUri}... ");
+
+            while (!isConnected)
+            {
+                try
+                {
+                    await WebSocketClient.ConnectAsync(serverUri, CancellationToken.None);
+                    isConnected = true;
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine($"Connection failed! Retrying... ");
+                    Thread.Sleep(200);
+                }
+            }
+
+            Console.WriteLine($"Websocket is now connected to {serverUri}!\n");
         }
 
         static async Task HandleWebsocketCommunicationAsync()
