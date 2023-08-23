@@ -15,7 +15,7 @@ namespace Websocket.Client
             {
                 var serviceUri = new Uri($"ws://localhost:{WebSocketConfiguration.Port}/send");
                 var cancellationTokenSource = new CancellationTokenSource();
-                cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(120));
+                cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(WebSocketConfiguration.KeepAliveIntervalSeconds));
 
                 try
                 {
