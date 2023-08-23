@@ -28,7 +28,7 @@ namespace Websocket.Client
         {
             while (webSocketClientWrapper.IsConnected())
             {
-                var message = userInterface.GetInputMessage();
+                var message = UserInterface.GetInputMessage();
                 if (!string.IsNullOrWhiteSpace(message))
                 {
                     await webSocketClientWrapper.SendWebsocketMessage(message);

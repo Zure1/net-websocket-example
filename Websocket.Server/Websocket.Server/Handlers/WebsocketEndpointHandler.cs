@@ -14,6 +14,7 @@ namespace Websocket.Server.Handlers
             {
                 switch (context.Request.Path)
                 {
+                    // Currently the client only sends SendTextMessage requests. But this is where you would handle different requests.
                     case EndpointConstants.SendTextMessage:
                     case EndpointConstants.CreateGroupChat:
                         await HandleDataAsync(context.WebSockets);
@@ -23,6 +24,7 @@ namespace Websocket.Server.Handlers
                         break;
                 }
 
+                // Call the next middleware in the pipeline
                 if (next != null)
                 {
                     await next(context);
@@ -30,6 +32,11 @@ namespace Websocket.Server.Handlers
             });
         }
 
+        /// <summary>
+        /// Handles incoming data from a client.
+        /// </summary>
+        /// <param name="webSocketManager">The websocket manager of the request.</param>
+        /// <returns>An awaitable Task that handles the data from the request.</returns>
         private static async Task HandleDataAsync(WebSocketManager webSocketManager)
         {
             if (!webSocketManager.IsWebSocketRequest)

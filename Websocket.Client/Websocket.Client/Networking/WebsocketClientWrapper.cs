@@ -4,10 +4,18 @@ using Websocket.Configuration;
 
 namespace Websocket.Client.Networking
 {
+    /// <summary>
+    /// This class is responsible for the websocket client.
+    /// It wraps the <see cref="ClientWebSocket"/> and provides methods to connect to the server and send messages.
+    /// </summary>
     internal class WebSocketClientWrapper
     {
         private readonly ClientWebSocket WebSocketClient = new();
 
+        /// <summary>
+        /// Connects to the websocket server.
+        /// </summary>
+        /// <returns></returns>
         public async Task ConnectToServerAsync()
         {
             var serverUri = new Uri($"ws://localhost:{WebSocketConfiguration.Port}/sendTextMessage");
@@ -32,6 +40,11 @@ namespace Websocket.Client.Networking
             Console.WriteLine($"Websocket is now connected to {serverUri}!\n");
         }
 
+        /// <summary>
+        /// Sends a message to the websocket server.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
         public async Task SendWebsocketMessage(string message)
         {
             var messageBytes = Encoding.UTF8.GetBytes(message);
@@ -39,6 +52,10 @@ namespace Websocket.Client.Networking
             await WebSocketClient.SendAsync(bytesToSend, WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
+        /// <summary>
+        /// Receives a message from the websocket server and prints it to the console.
+        /// </summary>
+        /// <returns></returns>
         public async Task ReceiveAndPrintServerResponse()
         {
             byte[] responseBuffer = new byte[1024];
@@ -58,6 +75,10 @@ namespace Websocket.Client.Networking
             }
         }
 
+        /// <summary>
+        /// Checks if the websocket client is connected to the server.
+        /// </summary>
+        /// <returns></returns>
         public bool IsConnected()
         {
             return WebSocketClient.State == WebSocketState.Open;
