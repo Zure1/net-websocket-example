@@ -6,60 +6,47 @@ namespace Websocket.Client
 {
     class Program
     {
+        private static ClientWebSocket WebSocketClient = new();
+
         static async Task Main(string[] args)
         {
-            Console.WriteLine("Press 'Enter' to continue...");
-            Console.ReadLine();
-
-            using (var websocketClient = new ClientWebSocket())
-            {
-                var serviceUri = new Uri($"ws://localhost:{WebSocketConfiguration.Port}/send");
-                var cancellationTokenSource = new CancellationTokenSource();
-                cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(WebSocketConfiguration.KeepAliveIntervalSeconds));
-
-                try
-                {
-                    await EstablishWebsocketConnectionAsync(websocketClient, serviceUri, cancellationTokenSource.Token);
-                    await HandleWebsocketCommunicationAsync(websocketClient, cancellationTokenSource.Token);
-                }
-                catch (WebSocketException e)
-                {
-                    Console.WriteLine(e);
-                }
-            }
+            await EstablishWebsocketConnectionAsync();
+            await HandleWebsocketCommunicationAsync();
 
             Console.ReadLine();
         }
 
-        static async Task EstablishWebsocketConnectionAsync(ClientWebSocket websocketClient, Uri serviceUri, CancellationToken cancellationToken)
+        static async Task EstablishWebsocketConnectionAsync()
         {
-            await websocketClient.ConnectAsync(serviceUri, cancellationToken);
-            Console.WriteLine("Websoket connection established!");
+            var serverUri = new Uri($"ws://localhost:{WebSocketConfiguration.Port}/send");
+            ConsoleUtils.DisplayFakeProgress("Connecting to server", 500);
+            await WebSocketClient.ConnectAsync(serverUri, CancellationToken.None);
+            Console.WriteLine("Websocket connection established!\n");
         }
 
-        static async Task HandleWebsocketCommunicationAsync(ClientWebSocket clientWebSocket, CancellationToken cancellationToken)
+        static async Task HandleWebsocketCommunicationAsync()
         {
-            while (clientWebSocket.State == WebSocketState.Open)
+            while (WebSocketClient.State == WebSocketState.Open)
             {
                 Console.WriteLine("Enter Message to send: ");
                 var message = Console.ReadLine();
 
                 if (!string.IsNullOrWhiteSpace(message))
                 {
-                    await SendWebsocketMessage(clientWebSocket, message, cancellationToken);
-                    await ReceiveAndPrintWebsocketResponse(clientWebSocket, cancellationToken);
+                    await SendWebsocketMessage(message);
+                    await ReceiveAndPrintWebsocketResponse();
                 }
             }
         }
 
-        static async Task SendWebsocketMessage(ClientWebSocket clientWebSocket, string message, CancellationToken cancellationToken)
+        static async Task SendWebsocketMessage(string message)
         {
             var messageBytes = Encoding.UTF8.GetBytes(message);
             var bytesToSend = new ArraySegment<byte>(messageBytes);
-            await clientWebSocket.SendAsync(bytesToSend, WebSocketMessageType.Text, true, cancellationToken);
+            await WebSocketClient.SendAsync(bytesToSend, WebSocketMessageType.Text, true, CancellationToken.None);
         }
 
-        static async Task ReceiveAndPrintWebsocketResponse(ClientWebSocket clientWebSocket, CancellationToken cancellationToken)
+        static async Task ReceiveAndPrintWebsocketResponse()
         {
             byte[] responseBuffer = new byte[1024];
             int offset = 0;
@@ -68,7 +55,7 @@ namespace Websocket.Client
             while (true)
             {
                 var bytesReceived = new ArraySegment<byte>(responseBuffer, offset, packet);
-                var response = await clientWebSocket.ReceiveAsync(bytesReceived, cancellationToken);
+                var response = await WebSocketClient.ReceiveAsync(bytesReceived, CancellationToken.None);
                 var responseMessage = Encoding.UTF8.GetString(responseBuffer, offset, response.Count);
                 Console.WriteLine(responseMessage);
                 if (response.EndOfMessage)
