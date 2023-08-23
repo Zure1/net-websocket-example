@@ -1,83 +1,41 @@
-﻿using System.Net.WebSockets;
-using System.Text;
-using Websocket.Configuration;
+﻿using Websocket.Client.Networking;
+using Websocket.Client.UI;
 
 namespace Websocket.Client
 {
     class Program
     {
-        private static ClientWebSocket WebSocketClient = new();
-
         static async Task Main(string[] args)
         {
-            await ConnectToServerAsync();
-            await HandleWebsocketCommunicationAsync();
+            var webSocketClientWrapper = new WebSocketClientWrapper();
+            var userInterface = new UserInterface();
 
-            Console.ReadLine();
+            await webSocketClientWrapper.ConnectToServerAsync();
+
+            _ = ListenToServerResponses(webSocketClientWrapper);
+            _ = HandleUserInputs(webSocketClientWrapper, userInterface);
         }
 
-        static async Task ConnectToServerAsync()
+        static async Task ListenToServerResponses(WebSocketClientWrapper webSocketClientWrapper)
         {
-            var serverUri = new Uri($"ws://localhost:{WebSocketConfiguration.Port}/send");
-            var isConnected = false;
-
-            Console.WriteLine($"Connecting to {serverUri}... ");
-
-            while (!isConnected)
+            while (webSocketClientWrapper.IsConnected())
             {
-                try
-                {
-                    await WebSocketClient.ConnectAsync(serverUri, CancellationToken.None);
-                    isConnected = true;
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine($"Connection failed! Retrying... ");
-                    Thread.Sleep(200);
-                }
+                await webSocketClientWrapper.ReceiveAndPrintServerResponse();
             }
-
-            Console.WriteLine($"Websocket is now connected to {serverUri}!\n");
         }
 
-        static async Task HandleWebsocketCommunicationAsync()
+        static async Task HandleUserInputs(WebSocketClientWrapper webSocketClientWrapper, UserInterface userInterface)
         {
-            while (WebSocketClient.State == WebSocketState.Open)
+            while (webSocketClientWrapper.IsConnected())
             {
-                Console.WriteLine("Enter Message to send: ");
-                var message = Console.ReadLine();
-
+                var message = userInterface.GetInputMessage();
                 if (!string.IsNullOrWhiteSpace(message))
                 {
-                    await SendWebsocketMessage(message);
-                    await ReceiveAndPrintWebsocketResponse();
+                    await webSocketClientWrapper.SendWebsocketMessage(message);
                 }
-            }
-        }
 
-        static async Task SendWebsocketMessage(string message)
-        {
-            var messageBytes = Encoding.UTF8.GetBytes(message);
-            var bytesToSend = new ArraySegment<byte>(messageBytes);
-            await WebSocketClient.SendAsync(bytesToSend, WebSocketMessageType.Text, true, CancellationToken.None);
-        }
-
-        static async Task ReceiveAndPrintWebsocketResponse()
-        {
-            byte[] responseBuffer = new byte[1024];
-            int offset = 0;
-            int packet = 1024;
-
-            while (true)
-            {
-                var bytesReceived = new ArraySegment<byte>(responseBuffer, offset, packet);
-                var response = await WebSocketClient.ReceiveAsync(bytesReceived, CancellationToken.None);
-                var responseMessage = Encoding.UTF8.GetString(responseBuffer, offset, response.Count);
-                Console.WriteLine(responseMessage);
-                if (response.EndOfMessage)
-                {
-                    break;
-                }
+                // Wait short so that the "enter message" is printed after the server response
+                Thread.Sleep(50);
             }
         }
     }
