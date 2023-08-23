@@ -7,14 +7,27 @@
   "targets": {
     ".NETCoreApp,Version=v6.0": {
       "Websocket.Server/1.0.0": {
+        "dependencies": {
+          "Websocket.Configuration": "1.0.0"
+        },
         "runtime": {
           "Websocket.Server.dll": {}
+        }
+      },
+      "Websocket.Configuration/1.0.0": {
+        "runtime": {
+          "Websocket.Configuration.dll": {}
         }
       }
     }
   },
   "libraries": {
     "Websocket.Server/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Websocket.Configuration/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

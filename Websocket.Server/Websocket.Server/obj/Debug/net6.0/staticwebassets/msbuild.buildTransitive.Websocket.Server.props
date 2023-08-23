@@ -1,3 +1,3 @@
 ﻿<Project>
-  <Import Project="..\buildMultiTargeting\Websocket.Server.props" />
+  <Import Project="../buildMultiTargeting/Websocket.Server.props" />
 </Project>

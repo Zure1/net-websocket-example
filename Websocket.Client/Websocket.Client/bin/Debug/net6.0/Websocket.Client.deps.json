@@ -8,7 +8,8 @@
     ".NETCoreApp,Version=v6.0": {
       "Websocket.Client/1.0.0": {
         "dependencies": {
-          "System.Net.WebSockets.Client": "4.3.2"
+          "System.Net.WebSockets.Client": "4.3.2",
+          "Websocket.Configuration": "1.0.0"
         },
         "runtime": {
           "Websocket.Client.dll": {}
@@ -540,6 +541,11 @@
           "Microsoft.NETCore.Targets": "1.1.0",
           "System.Runtime": "4.3.0"
         }
+      },
+      "Websocket.Configuration/1.0.0": {
+        "runtime": {
+          "Websocket.Configuration.dll": {}
+        }
       }
     }
   },
@@ -975,6 +981,11 @@
       "sha512": "sha512-Z6YfyYTCg7lOZjJzBjONJTFKGN9/NIYKSxhU5GRd+DTwHSZyvWp1xuI5aR+dLg+ayyC5Xv57KiY4oJ0tMO89fQ==",
       "path": "system.threading.timer/4.3.0",
       "hashPath": "system.threading.timer.4.3.0.nupkg.sha512"
+    },
+    "Websocket.Configuration/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     }
   }
 }

@@ -8,4 +8,4 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Websocket.Client
-build_property.ProjectDir = E:\proj\WebSocket\Websocket.Client\Websocket.Client\
+build_property.ProjectDir = /Users/schroeer/proj/net-websocket-example/Websocket.Client/Websocket.Client/

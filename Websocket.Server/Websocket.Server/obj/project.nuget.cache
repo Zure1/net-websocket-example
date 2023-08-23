@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "csMh+Z827agiHWYNMncJtGKBzoJ7QEKSBm6OMKxG8wT36v+ZRlRXRppnD2O1OfDONuXCDBk3HS5u8Ss+SZqxVg==",
+  "dgSpecHash": "M9my12XJEfm5115LDPkJLHV43RJIU1lTq16oj5K/tC1RDFXPf+n9jyBS20ilieS/nPQZTOrp2gb78OEFz1czPw==",
   "success": true,
-  "projectFilePath": "E:\\proj\\WebSocket\\Websocket.Server\\Websocket.Server\\Websocket.Server.csproj",
+  "projectFilePath": "/Users/schroeer/proj/net-websocket-example/Websocket.Server/Websocket.Server/Websocket.Server.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

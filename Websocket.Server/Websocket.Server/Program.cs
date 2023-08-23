@@ -1,3 +1,5 @@
+using Websocket.Configuration;
+
 namespace Websocket.Server
 {
     class Program
@@ -7,12 +9,15 @@ namespace Websocket.Server
             CreateHostBuilder(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+        public static IHostBuilder CreateHostBuilder(string[] args)
+        {
+            var serverUrl = $"http://localhost:{WebSocketConfiguration.Port}";
+            return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://localhost:5000"); // Set the desired port
+                    webBuilder.UseUrls(serverUrl);
                 });
+        }
     }
 }

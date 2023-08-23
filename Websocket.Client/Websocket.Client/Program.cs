@@ -1,5 +1,6 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
+using Websocket.Configuration;
 
 namespace Websocket.Client
 {
@@ -7,14 +8,12 @@ namespace Websocket.Client
     {
         static async Task Main(string[] args)
         {
-            string port = "5000";
-
             Console.WriteLine("Press 'Enter' to continue...");
             Console.ReadLine();
 
             using (var websocketClient = new ClientWebSocket())
             {
-                var serviceUri = new Uri($"ws://localhost:{port}/send");
+                var serviceUri = new Uri($"ws://localhost:{WebSocketConfiguration.Port}/send");
                 var cancellationTokenSource = new CancellationTokenSource();
                 cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(120));
 
@@ -55,8 +54,8 @@ namespace Websocket.Client
 
         static async Task SendWebsocketMessage(ClientWebSocket clientWebSocket, string message, CancellationToken cancellationToken)
         {
-            byte[] messageBytes = Encoding.UTF8.GetBytes(message);
-            ArraySegment<byte> bytesToSend = new ArraySegment<byte>(messageBytes);
+            var messageBytes = Encoding.UTF8.GetBytes(message);
+            var bytesToSend = new ArraySegment<byte>(messageBytes);
             await clientWebSocket.SendAsync(bytesToSend, WebSocketMessageType.Text, true, cancellationToken);
         }
 
