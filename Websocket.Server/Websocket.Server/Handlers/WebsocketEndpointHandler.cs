@@ -12,7 +12,7 @@ namespace Websocket.Server.Handlers
         {
             app.Use(async (context, next) =>
             {
-                if (context.Request.Path == $"/{WebSocketSettings.Name}")
+                if (context.Request.Path != $"/{WebSocketSettings.Name}")
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 }
