@@ -8,12 +8,11 @@ namespace Websocket.Client
         static async Task Main(string[] args)
         {
             var webSocketClientWrapper = new WebSocketClientWrapper();
-            var userInterface = new UserInterface();
 
             await webSocketClientWrapper.ConnectToServerAsync();
 
             _ = ListenToServerResponses(webSocketClientWrapper);
-            _ = HandleUserInputs(webSocketClientWrapper, userInterface);
+            _ = HandleUserInputs(webSocketClientWrapper);
         }
 
         static async Task ListenToServerResponses(WebSocketClientWrapper webSocketClientWrapper)
@@ -24,7 +23,7 @@ namespace Websocket.Client
             }
         }
 
-        static async Task HandleUserInputs(WebSocketClientWrapper webSocketClientWrapper, UserInterface userInterface)
+        static async Task HandleUserInputs(WebSocketClientWrapper webSocketClientWrapper)
         {
             while (webSocketClientWrapper.IsConnected())
             {
