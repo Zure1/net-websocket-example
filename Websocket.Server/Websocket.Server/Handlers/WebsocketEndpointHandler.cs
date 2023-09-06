@@ -12,16 +12,13 @@ namespace Websocket.Server.Handlers
         {
             app.Use(async (context, next) =>
             {
-                switch (context.Request.Path)
+                if (context.Request.Path == $"/{WebSocketConfiguration.Name}")
                 {
-                    // Currently the client only sends SendTextMessage requests. But this is where you would handle different requests.
-                    case EndpointConstants.SendTextMessage:
-                    case EndpointConstants.CreateGroupChat:
-                        await HandleDataAsync(context.WebSockets);
-                        break;
-                    default:
-                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                        break;
+                    context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                }
+                else
+                {
+                    await HandleDataAsync(context.WebSockets);
                 }
 
                 // Call the next middleware in the pipeline
@@ -56,7 +53,7 @@ namespace Websocket.Server.Handlers
             {
                 while (!result.CloseStatus.HasValue)
                 {
-                    string clientMessage = ReceiveMessage(webSocket, result);
+                    string clientMessage = ReceiveMessage(result);
                     Console.WriteLine($"Client says: {clientMessage}");
 
                     string serverResponse = $"Server says: Received message \"{clientMessage}\"\n";
@@ -71,7 +68,7 @@ namespace Websocket.Server.Handlers
             WebsocketManager.Instance.RemoveClient(webSocket);
         }
 
-        private static string ReceiveMessage(WebSocket webSocket, WebSocketReceiveResult result)
+        private static string ReceiveMessage(WebSocketReceiveResult result)
         {
             var messageBytes = new ArraySegment<byte>(WebSocketConfiguration.Buffer, 0, result.Count);
             return Encoding.UTF8.GetString(messageBytes);
