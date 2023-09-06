@@ -1,5 +1,7 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
+using Websocket.Client.Models;
 using Websocket.Configuration;
 
 namespace Websocket.Client.Networking
@@ -52,7 +54,16 @@ namespace Websocket.Client.Networking
         /// <returns></returns>
         public async Task SendWebsocketMessage(string message)
         {
-            var messageBytes = Encoding.UTF8.GetBytes(message);
+            var messageObject = new WebSocketMessage
+            {
+                Type = "TextMessage",
+                Message = message,
+                Sender = "100298",
+                Receiver = "186293"
+            };
+
+            var serializedMessage = JsonSerializer.Serialize(messageObject);
+            var messageBytes = Encoding.UTF8.GetBytes(serializedMessage);
             var bytesToSend = new ArraySegment<byte>(messageBytes);
             await WebSocketClient.SendAsync(bytesToSend, WebSocketMessageType.Text, true, CancellationToken.None);
         }

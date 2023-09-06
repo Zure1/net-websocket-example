@@ -1,8 +1,10 @@
 ﻿using System.Net;
 using System.Net.WebSockets;
 using System.Text;
+using System.Text.Json;
 using Websocket.Configuration;
 using Websocket.Server.Connections;
+using Websocket.Server.Models;
 
 namespace Websocket.Server.Handlers
 {
@@ -53,13 +55,25 @@ namespace Websocket.Server.Handlers
             {
                 while (!result.CloseStatus.HasValue)
                 {
-                    string clientMessage = ReceiveMessage(result);
-                    Console.WriteLine($"Client says: {clientMessage}");
-
-                    string serverResponse = $"Server says: Received message \"{clientMessage}\"\n";
-                    await SendMessageAsync(webSocket, serverResponse, result);
-
-                    result = await webSocket.ReceiveAsync(new ArraySegment<byte>(WebSocketSettings.Buffer), CancellationToken.None);
+                    var clientMessage = ReceiveMessage(result);
+                    if (clientMessage == null)
+                    {
+                        Console.WriteLine("Received websocket message from Client is null!");
+                    }
+                    else
+                    {
+                        switch (clientMessage.Type)
+                        {
+                            case "TextMessage":
+                                string serverResponse = $"Server says: Received text message \"{clientMessage.Message}\" from User {clientMessage.Sender} to User {clientMessage.Receiver}\n";
+                                await SendMessageAsync(webSocket, serverResponse, result);
+                                result = await webSocket.ReceiveAsync(new ArraySegment<byte>(WebSocketSettings.Buffer), CancellationToken.None);
+                                break;
+                            default:
+                                Console.WriteLine($"{nameof(WebSocketMessage)}.{nameof(WebSocketMessage.Type)} '{clientMessage.Type}' is not supported!");
+                                break;
+                        }
+                    }
                 }
             }
 
@@ -68,10 +82,12 @@ namespace Websocket.Server.Handlers
             WebsocketManager.Instance.RemoveClient(webSocket);
         }
 
-        private static string ReceiveMessage(WebSocketReceiveResult result)
+        private static WebSocketMessage ReceiveMessage(WebSocketReceiveResult result)
         {
             var messageBytes = new ArraySegment<byte>(WebSocketSettings.Buffer, 0, result.Count);
-            return Encoding.UTF8.GetString(messageBytes);
+            var messageString = Encoding.UTF8.GetString(messageBytes.Array, messageBytes.Offset, messageBytes.Count);
+
+            return JsonSerializer.Deserialize<WebSocketMessage>(messageString);
         }
 
         private static async Task SendMessageAsync(WebSocket webSocket, string message, WebSocketReceiveResult result)
