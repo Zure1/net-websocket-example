@@ -10,7 +10,7 @@ namespace Websocket.Client.Networking
     /// </summary>
     internal class WebSocketClientWrapper
     {
-        private readonly ClientWebSocket WebSocketClient = new();
+        private ClientWebSocket WebSocketClient = new();
 
         /// <summary>
         /// Connects to the websocket server.
@@ -27,12 +27,17 @@ namespace Websocket.Client.Networking
             {
                 try
                 {
+                    if (WebSocketClient == null || WebSocketClient.State == WebSocketState.Closed || WebSocketClient.State == WebSocketState.Aborted)
+                    {
+                        WebSocketClient = new ClientWebSocket();
+                    }
+
                     await WebSocketClient.ConnectAsync(serverUri, CancellationToken.None);
                     isConnected = true;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Console.WriteLine($"Connection failed! Retrying... ");
+                    Console.WriteLine($"Connection failed! Exception message:\n{e.Message}\nRetrying... ");
                     Thread.Sleep(500);
                 }
             }
