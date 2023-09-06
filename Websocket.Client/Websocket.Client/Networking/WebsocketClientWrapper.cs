@@ -18,7 +18,7 @@ namespace Websocket.Client.Networking
         /// <returns></returns>
         public async Task ConnectToServerAsync()
         {
-            var serverUri = new Uri($"ws://localhost:{WebSocketConfiguration.Port}/{WebSocketConfiguration.Name}");
+            var serverUri = new Uri($"ws://localhost:{WebSocketSettings.Port}/{WebSocketSettings.Name}");
             var isConnected = false;
 
             Console.WriteLine($"Connecting to {serverUri}... ");

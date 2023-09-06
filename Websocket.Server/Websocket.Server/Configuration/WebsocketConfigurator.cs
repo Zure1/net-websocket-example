@@ -9,7 +9,7 @@ namespace Websocket.Server.Configuration
             app.UseRouting();
             var wsOptions = new WebSocketOptions()
             {
-                KeepAliveInterval = TimeSpan.FromSeconds(WebSocketConfiguration.KeepAliveIntervalSeconds)
+                KeepAliveInterval = TimeSpan.FromSeconds(WebSocketSettings.KeepAliveIntervalSeconds)
             };
 
             app.UseWebSockets(wsOptions);

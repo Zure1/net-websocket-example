@@ -11,7 +11,7 @@ namespace Websocket.Server
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
-            var serverUrl = $"http://localhost:{WebSocketConfiguration.Port}";
+            var serverUrl = $"http://localhost:{WebSocketSettings.Port}";
             return Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

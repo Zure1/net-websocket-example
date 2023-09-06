@@ -12,7 +12,7 @@ namespace Websocket.Server.Handlers
         {
             app.Use(async (context, next) =>
             {
-                if (context.Request.Path == $"/{WebSocketConfiguration.Name}")
+                if (context.Request.Path == $"/{WebSocketSettings.Name}")
                 {
                     context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 }
@@ -46,7 +46,7 @@ namespace Websocket.Server.Handlers
             WebsocketManager.Instance.AddClient(webSocket);
 
             // Receive data
-            WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(WebSocketConfiguration.Buffer), CancellationToken.None);
+            WebSocketReceiveResult result = await webSocket.ReceiveAsync(new ArraySegment<byte>(WebSocketSettings.Buffer), CancellationToken.None);
 
             // Handle data
             if (result != null)
@@ -59,7 +59,7 @@ namespace Websocket.Server.Handlers
                     string serverResponse = $"Server says: Received message \"{clientMessage}\"\n";
                     await SendMessageAsync(webSocket, serverResponse, result);
 
-                    result = await webSocket.ReceiveAsync(new ArraySegment<byte>(WebSocketConfiguration.Buffer), CancellationToken.None);
+                    result = await webSocket.ReceiveAsync(new ArraySegment<byte>(WebSocketSettings.Buffer), CancellationToken.None);
                 }
             }
 
@@ -70,7 +70,7 @@ namespace Websocket.Server.Handlers
 
         private static string ReceiveMessage(WebSocketReceiveResult result)
         {
-            var messageBytes = new ArraySegment<byte>(WebSocketConfiguration.Buffer, 0, result.Count);
+            var messageBytes = new ArraySegment<byte>(WebSocketSettings.Buffer, 0, result.Count);
             return Encoding.UTF8.GetString(messageBytes);
         }
 

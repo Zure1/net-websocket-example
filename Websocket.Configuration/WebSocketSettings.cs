@@ -1,6 +1,6 @@
 ﻿namespace Websocket.Configuration;
 
-public static class WebSocketConfiguration
+public static class WebSocketSettings
 {
     public const string Name = "Chat";
     public static string Port { get; } = "5000";
